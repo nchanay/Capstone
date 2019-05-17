@@ -8,42 +8,13 @@ const downloadBtn = document.getElementById('download-btn');
 const uploadFile = document.getElementById('upload-file');
 const revertBtn = document.getElementById('revert-btn');
 
-function b64toBlob(b64Data, contentType, sliceSize) {
-        contentType = contentType || '';
-        sliceSize = sliceSize || 512;
-
-        var byteCharacters = atob(b64Data);
-        var byteArrays = [];
-
-        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-            var slice = byteCharacters.slice(offset, offset + sliceSize);
-
-            var byteNumbers = new Array(slice.length);
-            for (var i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
-            }
-
-            var byteArray = new Uint8Array(byteNumbers);
-
-            byteArrays.push(byteArray);
-        }
-
-      var blob = new Blob(byteArrays, {type: contentType});
-      return blob;
-}
-
+// submits original and altered images as form data to the server
 function submitFile() {
 
-  let imageURL = canvas.toDataURL('image/jpeg', 0.8);
-  let block = imageURL.split(";");
-  let contentType = block[0].split(":")[1];
-  let realData = block[1].split(",")[1];
-
-  let blob = b64toBlob(realData, contentType);
-
+  let imgURL = canvas.toDataURL('image/jpeg', 1.0);
   let formData = new FormData();
   formData.append('original_image', document.getElementById('upload-file').files[0]);
-  formData.append('altered_image', blob);
+  formData.append('altered_image', imgURL);
 
   axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
   axios.defaults.xsrfCookieName = "csrftoken";
@@ -231,7 +202,7 @@ function download(canvas, filename) {
 
   // Set props
   link.download = filename;
-  link.href = canvas.toDataURL('image/jpeg', 0.8);
+  link.href = canvas.toDataURL('image/jpeg', 1.0);
   // New mouse event
   e = new MouseEvent('click');
   // Dispatch event

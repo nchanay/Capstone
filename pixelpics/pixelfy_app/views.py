@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
-from base64 import b64encode
+from django.core.files.base import ContentFile
+from base64 import b64decode
 from .models import *
 
 
@@ -14,22 +15,18 @@ def index(request):
 @login_required
 def upload(request):
     if request.method == "POST":
-        data = request.FILES
-        print(request.FILES)
-        alt_img_data = request.POST['altered_image']
+        original = request.FILES['original_image']
+        ext, altered_b64 = request.POST['altered_image'].split(';base64,')
+        ext = ext.split('/')[-1]
+        altered = ContentFile(b64decode(altered_b64), name='temp.' + ext) # You can save this as file instance.
 
-        post = Pixelfy(user=request.user, original_image=data['original_image'], altered_image=data.get('altered_image'))
+        print(original, type(original))
+        print(altered, type(altered))
+        post = Pixelfy(user=request.user, original_image=original, altered_image=altered)
         post.save()
         return redirect('profile')
     return render(request, 'pixelfy_app/upload.html')
 
 
-# def saveImage(request):
-#     if request.method == "POST":
-#         data = request.post.data
-#         print(data)
-#         print(request.POST)
-#         print(request.body)
-#         post = Pixelfy(user=request.user, original_image=data[original_image], altered_image=data[altered_image])
-#         post.save()
-#     return redirect('profile.html')
+def alt_filename(request):
+    pass
