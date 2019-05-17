@@ -1,0 +1,13 @@
+.page-content {
+  padding: 5%;
+}
+
+#canvas {
+  margin: auto;
+  background: #ececec;
+  width: 100%;
+}
+
+.btn-disabled {
+  color: #fff !important;
+}

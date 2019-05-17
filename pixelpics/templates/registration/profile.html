@@ -1,0 +1,8 @@
+{% extends 'pixelfy_app/base.html' %}
+
+{% block content %}
+    <h1>This is where the profile will be</h1>
+    <a href="{% url 'pixelfy:upload' %}">
+    <button class="btn btn-primary">create image</button>
+    </a>
+{% endblock %}
