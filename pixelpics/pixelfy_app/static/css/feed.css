@@ -1,0 +1,17 @@
+.page-content {
+  padding: 5%;
+}
+
+.img-feed {
+  width: 100%;
+  border: 2px solid white;
+}
+
+.break {
+  border-top: 1px solid #282828;
+}
+
+.feed-topper {
+  padding-top: 1em;
+  margin-top: 2em;
+}

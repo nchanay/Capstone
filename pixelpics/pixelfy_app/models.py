@@ -13,3 +13,11 @@ class Pixelfy(models.Model):
 
     def __str__(self):
         return self.user.username + str(self.pk)
+
+    def like_count(self):
+        return len(self.likes)
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Pixelfy, on_delete=models.CASCADE, related_name='likes')

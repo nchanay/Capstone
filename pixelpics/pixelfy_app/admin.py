@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Pixelfy
+from .models import *
 
 # Register your models here.
 admin.site.register(Pixelfy)
+admin.site.register(Like)

@@ -1,8 +1,40 @@
 {% extends 'pixelfy_app/base.html' %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel='stylesheet' href='{% static "css/slick-theme.css" %}'>
+    <link rel='stylesheet' href='{% static "css/slick.css" %}'>
+    <link rel='stylesheet' href='{% static "css/profile.css" %}'>
+{% endblock %}
 
 {% block content %}
-    <h1>This is where the profile will be</h1>
-    <a href="{% url 'pixelfy:upload' %}">
-    <button class="btn btn-primary">create image</button>
-    </a>
+    <div class="container text-center">
+        <h2>Hello {{request.user}}, welcome to your gallery!</h2>
+    </div>
+
+    <div class="container">
+        <div class="slider slider-nav">
+            {% for img in gallery %}
+                <div class="nav-box">
+                    <img src="{{img.original_image.url}}" class="nav_thumbnail">
+                </div>
+            {% endfor %}
+        </div>
+
+  			<div class="slider slider-single main-gallery">
+            {% for img in gallery %}
+                <div class="main_box d-flex justify-content-center">
+                    <img src="{{img.original_image.url}}" class="main_img">
+                    <img src="{{img.altered_image.url}}" class="main_img">
+                </div>
+            {% endfor %}
+  			</div>
+    </div>
+
+{% endblock %}
+
+{% block js_body %}
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{% static 'js/slick.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/profile.js' %}"></script>
 {% endblock %}

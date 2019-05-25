@@ -3,17 +3,23 @@ const ctx = canvas.getContext('2d');
 
 let img = new Image();
 let fileName = '';
+let blocksize = 100;
+let mixsize = 100;
 
 const downloadBtn = document.getElementById('download-btn');
 const uploadFile = document.getElementById('upload-file');
 const revertBtn = document.getElementById('revert-btn');
+const pixelfy = document.getElementById('pixelate-btn');
+const mixelfy = document.getElementById('mixelate-btn');
+const blocksizeRange = document.getElementById("pixelsize");
+const mixsizeRange = document.getElementById("mixelsize");
 
 // submits original and altered images as form data to the server
 function submitFile() {
 
   let imgURL = canvas.toDataURL('image/jpeg', 1.0);
   let formData = new FormData();
-  formData.append('original_image', document.getElementById('upload-file').files[0]);
+  formData.append('original_image', uploadFile.files[0]);
   formData.append('altered_image', imgURL);
 
   axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
@@ -35,35 +41,6 @@ function submitFile() {
     console.log(err);
   });
 }
-
-// function submitFile() {
-//   let blob = canvas.toBlob(function(blob) {
-//       console.log(blob)
-//       let formData = new FormData();
-//       formData.append('original_image', document.getElementById('upload-file').files[0]);
-//       formData.append('altered_image', blob);
-//
-//       axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-//       axios.defaults.xsrfCookieName = "csrftoken";
-//
-//       axios.post( '',
-//       formData,
-//       {
-//         headers: {
-//           'Content-Type': 'multipart/form-data'
-//         }
-//       }
-//     ).then(function(res){
-//       console.log('SUCCESS!!');
-//       // console.log(res);
-//     })
-//     .catch(function(err){
-//       console.log('FAILURE!!');
-//       // console.log(err);
-//     });
-//
-//   }, 'image/jpeg', 0.8)
-// }
 
 // add filters & Effects
 document.addEventListener('click', (e) => {
@@ -136,6 +113,60 @@ document.addEventListener('click', (e) => {
   }
 });
 
+function rgb(r, g, b) {
+  if (g == undefined) g = r;
+  if (b == undefined) b = r;
+  return 'rgb('+clamp(Math.round(r),0,255)+', '+clamp(Math.round(g),0,255)+', '+clamp(Math.round(b),0,255)+')';
+};
+
+function clamp(value, min, max){
+  return Math.min(Math.max(value, Math.min(min, max)),Math.max(min, max));
+}
+
+function drawImage() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    canvas.removeAttribute('data-caman-id');
+}
+
+
+blocksizeRange.addEventListener('change', function(evt) {
+  blocksize = Math.floor(canvas.width/blocksizeRange.value)
+  drawImage()
+  pixelate(blocksize)
+})
+
+mixsizeRange.addEventListener('change', function(evt) {
+  mixsize = canvas.width/mixsizeRange.value
+  drawImage()
+  pixelate(mixsize)
+})
+
+
+function pixelate(blocksize) {
+  var imgData = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (var y = 0; y < canvas.height; y += blocksize) {
+    for (var x = 0; x < canvas.width; x += blocksize) {
+      var pos = (x + y * canvas.width) * 4;
+      var red   = imgData[pos];
+      var green = imgData[pos+1];
+      var blue  = imgData[pos+2];
+
+      ctx.fillStyle = rgb(red, green, blue);
+      ctx.fillRect(x, y, blocksize, blocksize);
+    }
+  }
+}
+
+pixelfy.addEventListener('click', () => pixelate(Math.floor(canvas.width/blocksize)))
+mixelfy.addEventListener('click', () => pixelate(canvas.width/mixsize))
+
+// pixelfy.addEventListener('click', () => pixelate(canvas.width/50))
+
 // Revert filters
 revertBtn.addEventListener('click', e => {
   Caman('#canvas', img, function() {
@@ -165,12 +196,7 @@ uploadFile.addEventListener('change', (e) => {
     // set src
     img.src = reader.result;
     // on image load, add to canvas
-    img.onload = function () {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0, img.width, img.height);
-      canvas.removeAttribute('data-caman-id');
-    }
+    img.onload = drawImage;
   }, false);
 });
 

@@ -1,6 +1,10 @@
 {% extends 'pixelfy_app/base.html' %}
 {% load static %}
 
+{% block extra_styles %}
+    <link rel='stylesheet' href='{% static "css/pixelfy.css" %}'>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row">
@@ -10,13 +14,27 @@
                 <label for="upload-file" class="custom-file-label">Choose Image</label>
             </div>
 
-            <canvas id="canvas"></canvas>
+            <div class="row">
+                <div class="col-md-9">
+                    <canvas id="canvas"></canvas>
+                </div>
+                <div class="col-md-3">
+                    <div>
+                        <button id="pixelate-btn" class="filter-btn pixelate-add btn btn-info btn-block">Pixelfy</button>
+                        <input type="range" class="custom-range" min="20" max="180" step="1" value="100" id="pixelsize">
+                    </div>
+                    <div>
+                        <button id="mixelate-btn" class="filter-btn pixelate-add btn btn-info btn-block">Random Noise</button>
+                        <input type="range" class="custom-range" min="20" max="180" step="1" value="100" id="mixelsize">
+                    </div>
+                </div>
+            </div>
 
-            <h4 class="text-center my-3">Filters</h4>
+            <h4 class="text-center my-3">Effects</h4>
 
             <div class="row text-center my-4">
                 <div class="col-md-3">
-                    <div class="btn-group btn-group-sm">
+                    <div class="btn-group btn-group-md">
                         <button class="filter-btn brightness-remove btn btn-info">-</button>
                         <button class="btn btn-secondary btn-disabled" disabled>Brightness</button>
                         <button class="filter-btn brightness-add btn btn-info">+</button>
@@ -24,7 +42,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <div class="btn-group btn-group-sm">
+                    <div class="btn-group btn-group-md">
                         <button class="filter-btn contrast-remove btn btn-info">-</button>
                         <button class="btn btn-secondary btn-disabled" disabled>Contrast</button>
                         <button class="filter-btn contrast-add btn btn-info">+</button>
@@ -32,7 +50,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <div class="btn-group btn-group-sm">
+                    <div class="btn-group btn-group-md">
                         <button class="filter-btn saturation-remove btn btn-info">-</button>
                         <button class="btn btn-secondary btn-disabled" disabled>Saturation</button>
                         <button class="filter-btn saturation-add btn btn-info">+</button>
@@ -40,7 +58,7 @@
                 </div>
 
                     <div class="col-md-3">
-                        <div class="btn-group btn-group-sm">
+                        <div class="btn-group btn-group-md">
                             <button class="filter-btn vibrance-remove btn btn-info">-</button>
                             <button class="btn btn-secondary btn-disabled" disabled>Vibrance</button>
                             <button class="filter-btn vibrance-add btn btn-info">+</button>
@@ -48,7 +66,7 @@
                     </div>
                 </div>
 
-                <h4 class="text-center my-3">Effects</h4>
+                <h4 class="text-center my-3">Filters</h4>
 
                 <div class="row mb-3">
                     <div class="col-md-3">
@@ -104,6 +122,7 @@
 {% endblock %}
 
 {% block js_body %}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
     <script src="{% static 'js/upload.js' %}"></script>
 {% endblock %}

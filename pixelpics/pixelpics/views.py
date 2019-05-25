@@ -24,5 +24,5 @@ def register(request):
 
 @login_required
 def profile(request):
-    user = get_object_or_404(User, username=request.user.username)
-    return render(request, 'registration/profile.html')
+    gallery = Pixelfy.objects.filter(user=request.user).order_by('-created_date')
+    return render(request, 'registration/profile.html', {'gallery': gallery})
