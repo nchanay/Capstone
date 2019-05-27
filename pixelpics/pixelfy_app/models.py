@@ -10,14 +10,10 @@ class Pixelfy(models.Model):
     original_image = models.ImageField(upload_to='images/original')
     altered_image = models.ImageField(upload_to='images/altered')
     created_date = models.DateTimeField(default=timezone.now)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     def __str__(self):
         return self.user.username + str(self.pk)
 
-    def like_count(self):
-        return len(self.likes)
-
-
-class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Pixelfy, on_delete=models.CASCADE, related_name='likes')
+    def total_likes(self):
+        return self.likes.count()

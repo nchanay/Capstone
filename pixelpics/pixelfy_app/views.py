@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.files.base import ContentFile
 from base64 import b64decode
 from .models import *
@@ -58,10 +58,7 @@ def upload(request):
         original = request.FILES['original_image']
         ext, altered_b64 = request.POST['altered_image'].split(';base64,')
         ext = ext.split('/')[-1]
-        altered = ContentFile(b64decode(altered_b64), name='temp.' + ext) # You can save this as file instance.
-
-        print(original, type(original))
-        print(altered, type(altered))
+        altered = ContentFile(b64decode(altered_b64), name='temp.' + ext)  # You can save this as file instance.
         post = Pixelfy(user=request.user, original_image=original, altered_image=altered)
         post.save()
         return redirect('profile')
@@ -72,14 +69,13 @@ def alt_filename(request):
     pass
 
 
-# set response options: like, unlike, fail - so jquery can update html/css
-def like(request, pk):
-    post = get_object_or_404(Pixelfy, pk=pk)
-    unlike = Like.objects.filter(user=request.user, post=post).exists()
-    if unlike:
-        unlike = Like.objects.get(user=request.user, post=post)
-        unlike.delete()
+def like_post(request):
+    post = get_object_or_404(Pixelfy, id=request.POST.get('post_id'))
+    is_liked = False
+    if post.likes.filter(id=request.user.id).exist():
+        post.likes.remove(request.user)
+        is_liked = False
     else:
-        like = Like(user=request.user, post=post)
-        like.save()
-    return HttpResponse('Success')
+        post.likes.add(request.user)
+        is_liked = True
+    return HttpResponseRedirect(post.get_absolute_url())

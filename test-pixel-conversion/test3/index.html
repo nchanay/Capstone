@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Canvas pixelfy</title>
+    <link rel="stylesheet" href="https://bootswatch.com/4/cyborg/bootstrap.min.css">
+    <link rel='stylesheet' href='canvas.css'>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-info mb-5">
+        <div class="container">
+            <a href="#" class="navbar-brand">Online Image Filter</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 m-auto">
+
+                <div class="custom-file mb-3">
+                    <input type="file" class="custom-file-input" id="upload-file"/>
+                    <label for="upload-file" class="custom-file-label">Choose Image</label>
+                </div>
+
+                <canvas id="canvas"></canvas>
+
+                <h4 class="text-center my-3">Filters</h4>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <button id="pixelate-btn" class="filter-btn pixelate-add btn btn-dark btn-block">Pixelate</button>
+                    </div>
+                </div>
+
+                <div class="row my-5">
+                    <div class="col-md-6">
+                       <button id="download-btn" class="btn btn-primary btn-block">Download Image</button>
+                    </div>
+
+                    <div class="col-md-6">
+                       <button id="revert-btn" class="btn btn-danger btn-block">Remove Filters</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+      <canvas id="canvas"></canvas>
+      <script src="canvas.js"></script>
+  </body>
+</html>
