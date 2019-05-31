@@ -26,3 +26,10 @@ def register(request):
 def profile(request):
     gallery = Pixelfy.objects.filter(user=request.user).order_by('-created_date')
     return render(request, 'registration/profile.html', {'gallery': gallery})
+
+
+@login_required
+def delete_post(request, pk):
+    post = get_object_or_404(Pixelfy, pk=pk, user=request.user)
+    post.delete()
+    return redirect('profile')

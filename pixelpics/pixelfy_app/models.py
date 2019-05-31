@@ -10,6 +10,7 @@ class Pixelfy(models.Model):
     original_image = models.ImageField(upload_to='images/original')
     altered_image = models.ImageField(upload_to='images/altered')
     created_date = models.DateTimeField(default=timezone.now)
+    # public = models.BooleanField(default=True)
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     def __str__(self):

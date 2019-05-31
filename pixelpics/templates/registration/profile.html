@@ -16,7 +16,7 @@
         <div class="slider slider-nav">
             {% for img in gallery %}
                 <div class="nav-box">
-                    <img src="{{img.original_image.url}}" class="nav_thumbnail">
+                    <img src="{{img.original_image.url}}" pk="{{img.pk}}" class="nav_thumbnail">
                 </div>
             {% endfor %}
         </div>
@@ -31,16 +31,33 @@
   			</div>
     </div>
 
-    <!-- <div class="container">
-        <div class="row d-flex justify-content-center">
-            <div class="col-md-2">
+    <div class="container">
+        <div class="row d-flex justify-content-end">
+            <!-- <div class="col-md-2">
                 <button id="hide-btn" class="btn btn-info btn-block">Hide from Feed</button>
-            </div>
+            </div> -->
             <div class="col-md-2">
-                <button id="delete-btn" class="btn btn-danger btn-block">Delete Image</button>
+                <button id="delete-btn" class="btn btn-danger btn-block" data-href="" data-toggle="modal" data-target="#confirm-delete">Delete Image</button>
             </div>
         </div>
-    </div> -->
+    </div>
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Delete this image?
+                </div>
+                <div class="modal-body">
+                    Are you sure? Deleting this image is irreversible...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a id='confirmDelete' class="btn btn-danger btn-ok">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <button class="btn btn-default" data-href="/delete.php?id=54" data-toggle="modal" data-target="#confirm-delete">Delete post</button> -->
 {% endblock %}
 
 {% block js_body %}

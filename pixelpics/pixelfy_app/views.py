@@ -11,45 +11,52 @@ from datetime import *
 # Create your views here.
 def index(request):
     feed = Pixelfy.objects.all().order_by('-created_date')
-    return render(request, 'pixelfy_app/index.html', {'posts': feed})
+    liked = [post for post in feed if post.likes.filter(id=request.user.id).exists()]
+    return render(request, 'pixelfy_app/index.html', {'posts': feed, 'liked': liked})
 
 
 def index_user(request, user):
     feed = Pixelfy.objects.filter(user__username=user).order_by('-created_date')
-    return render(request, 'pixelfy_app/index.html', {'posts': feed})
+    liked = [post for post in feed if post.likes.filter(id=request.user.id).exists()]
+    return render(request, 'pixelfy_app/index.html', {'posts': feed, 'liked': liked})
 
 
 def index_best(request):
     feed = Pixelfy.objects.annotate(like_count=Count('likes')).order_by('-like_count')
-    return render(request, 'pixelfy_app/index.html', {'posts': feed})
+    liked = [post for post in feed if post.likes.filter(id=request.user.id).exists()]
+    return render(request, 'pixelfy_app/index.html', {'posts': feed, 'liked': liked})
 
 
 def index_year(request):
     current = datetime.now()
     last_year = current - timedelta(days=365)
     feed = Pixelfy.objects.filter(created_date__gte=last_year).order_by('-created_date')
-    return render(request, 'pixelfy_app/index.html', {'posts': feed})
+    liked = [post for post in feed if post.likes.filter(id=request.user.id).exists()]
+    return render(request, 'pixelfy_app/index.html', {'posts': feed, 'liked': liked})
 
 
 def index_month(request):
     current = datetime.now()
     last_month = current - timedelta(days=30)
     feed = Pixelfy.objects.filter(created_date__gte=last_month).order_by('-created_date')
-    return render(request, 'pixelfy_app/index.html', {'posts': feed})
+    liked = [post for post in feed if post.likes.filter(id=request.user.id).exists()]
+    return render(request, 'pixelfy_app/index.html', {'posts': feed, 'liked': liked})
 
 
 def index_week(request):
     current = datetime.now()
     last_week = current - timedelta(days=7)
     feed = Pixelfy.objects.filter(created_date__gte=last_week).order_by('-created_date')
-    return render(request, 'pixelfy_app/index.html', {'posts': feed})
+    liked = [post for post in feed if post.likes.filter(id=request.user.id).exists()]
+    return render(request, 'pixelfy_app/index.html', {'posts': feed, 'liked': liked})
 
 
 def index_day(request):
     current = datetime.now()
     last_day = current - timedelta(days=1)
     feed = Pixelfy.objects.filter(created_date__gte=last_day).order_by('-created_date')
-    return render(request, 'pixelfy_app/index.html', {'posts': feed})
+    liked = [post for post in feed if post.likes.filter(id=request.user.id).exists()]
+    return render(request, 'pixelfy_app/index.html', {'posts': feed, 'liked': liked})
 
 
 @login_required
@@ -71,11 +78,8 @@ def alt_filename(request):
 
 def like_post(request):
     post = get_object_or_404(Pixelfy, id=request.POST.get('post_id'))
-    is_liked = False
-    if post.likes.filter(id=request.user.id).exist():
+    if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
-        is_liked = False
     else:
         post.likes.add(request.user)
-        is_liked = True
-    return HttpResponseRedirect(post.get_absolute_url())
+    return redirect('pixelfy:index')

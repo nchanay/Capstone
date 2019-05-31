@@ -1,3 +1,21 @@
+// $('#hide-btn').on('click', function(e) {
+//   console.log("test")
+// });
+
+$('#confirmDelete').on('click', function () {
+    pk = $('.is-active img').attr('pk');
+    url = `delete/${pk}/`
+    $.ajax({
+        url: url,
+        success: function (data) {
+          window.location.href = ''
+        },
+        fail: function (error) {
+          console.log(error);
+        }
+    });
+});
+
 $(function() {
   $('.slider-single').slick({
     slidesToShow: 1,
@@ -57,5 +75,4 @@ $(function() {
 
     $('.slider-single').slick('slickGoTo', goToSingleSlide);
   });
-
 });

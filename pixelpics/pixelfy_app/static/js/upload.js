@@ -42,6 +42,84 @@ function submitFile() {
   });
 }
 
+
+function rgb(r, g, b) {
+  if (g == undefined) g = r;
+  if (b == undefined) b = r;
+  return 'rgb('+clamp(Math.round(r),0,255)+', '+clamp(Math.round(g),0,255)+', '+clamp(Math.round(b),0,255)+')';
+};
+
+function clamp(value, min, max){
+  return Math.min(Math.max(value, Math.min(min, max)),Math.max(min, max));
+}
+
+function drawImage() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    canvas.removeAttribute('data-caman-id');
+}
+
+// Upload file
+uploadFile.addEventListener('change', (e) => {
+  // get file
+  const file = document.getElementById('upload-file').files[0];
+
+  // Init FileReader
+  const reader = new FileReader();
+
+  if (file) {
+    //set file name
+    fileName = file.name;
+    // read data as url
+    reader.readAsDataURL(file);
+  }
+
+  //add image to canvas
+  reader.addEventListener('load', (ev) => {
+    // create img
+    img = new Image();
+    // set src
+    img.src = reader.result;
+    // on image load, add to canvas
+    img.onload = drawImage;
+  }, false);
+});
+
+function pixelate(blocksize) {
+  var imgData = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (var y = 0; y < canvas.height; y += blocksize) {
+    for (var x = 0; x < canvas.width; x += blocksize) {
+      var pos = (x + y * canvas.width) * 4;
+      var red   = imgData[pos];
+      var green = imgData[pos+1];
+      var blue  = imgData[pos+2];
+
+      ctx.fillStyle = rgb(red, green, blue);
+      ctx.fillRect(x, y, blocksize, blocksize);
+    }
+  }
+}
+
+pixelfy.addEventListener('click', () => pixelate(Math.floor(canvas.width/blocksize)))
+
+blocksizeRange.addEventListener('change', function(evt) {
+  blocksize = Math.floor(canvas.width/blocksizeRange.value)
+  drawImage()
+  pixelate(blocksize)
+})
+
+mixelfy.addEventListener('click', () => pixelate(canvas.width/mixsize))
+
+mixsizeRange.addEventListener('change', function(evt) {
+  mixsize = canvas.width/mixsizeRange.value
+  drawImage()
+  pixelate(mixsize)
+})
+
 // add filters & Effects
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('filter-btn')) {
@@ -113,83 +191,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-function rgb(r, g, b) {
-  if (g == undefined) g = r;
-  if (b == undefined) b = r;
-  return 'rgb('+clamp(Math.round(r),0,255)+', '+clamp(Math.round(g),0,255)+', '+clamp(Math.round(b),0,255)+')';
-};
-
-function clamp(value, min, max){
-  return Math.min(Math.max(value, Math.min(min, max)),Math.max(min, max));
-}
-
-function drawImage() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0, img.width, img.height);
-    canvas.removeAttribute('data-caman-id');
-}
-
-// Upload file
-uploadFile.addEventListener('change', (e) => {
-  // get file
-  const file = document.getElementById('upload-file').files[0];
-
-  // Init FileReader
-  const reader = new FileReader();
-
-  if (file) {
-    //set file name
-    fileName = file.name;
-    // read data as url
-    reader.readAsDataURL(file);
-  }
-
-  //add image to canvas
-  reader.addEventListener('load', (ev) => {
-    // create img
-    img = new Image();
-    // set src
-    img.src = reader.result;
-    // on image load, add to canvas
-    img.onload = drawImage;
-  }, false);
-});
-
-blocksizeRange.addEventListener('change', function(evt) {
-  blocksize = Math.floor(canvas.width/blocksizeRange.value)
-  drawImage()
-  pixelate(blocksize)
-})
-
-pixelfy.addEventListener('click', () => pixelate(Math.floor(canvas.width/blocksize)))
-
-mixsizeRange.addEventListener('change', function(evt) {
-  mixsize = canvas.width/mixsizeRange.value
-  drawImage()
-  pixelate(mixsize)
-})
-
-mixelfy.addEventListener('click', () => pixelate(canvas.width/mixsize))
-
-function pixelate(blocksize) {
-  var imgData = ctx.getImageData(0,0,canvas.width,canvas.height).data;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  for (var y = 0; y < canvas.height; y += blocksize) {
-    for (var x = 0; x < canvas.width; x += blocksize) {
-      var pos = (x + y * canvas.width) * 4;
-      var red   = imgData[pos];
-      var green = imgData[pos+1];
-      var blue  = imgData[pos+2];
-
-      ctx.fillStyle = rgb(red, green, blue);
-      ctx.fillRect(x, y, blocksize, blocksize);
-    }
-  }
-}
-
 // Revert filters
 revertBtn.addEventListener('click', e => {
   // Caman('#canvas', img, function() {
@@ -197,7 +198,6 @@ revertBtn.addEventListener('click', e => {
   // });
   drawImage();
 });
-
 
 // Download Event
 downloadBtn.addEventListener('click', (e) => {
