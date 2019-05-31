@@ -1,8 +1,9 @@
-$('button[name="post_id"]').each(button => button.click(function(){
+document.getElementsByName('post_id').forEach(element => {
+    element.addEventListener('click', function(){
+      pk = $(element).attr('value')
+      url = `http://127.0.0.1:8000/like_post/${pk}/`
       $.ajax({
-               type: "POST",
-               url: "{% url 'pixelfy:like_post' %}",
-               // data: {'slug': $(this).attr('titulo'), 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+               url: url,
                dataType: "json",
                success: function(response) {
             },
@@ -10,7 +11,8 @@ $('button[name="post_id"]').each(button => button.click(function(){
                        console.log(error);
             }
       });
-}))
+    })
+})
 
 // const likeBtns = document.querySelectorAll('.like-btn')
 //

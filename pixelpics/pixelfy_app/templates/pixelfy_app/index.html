@@ -24,14 +24,11 @@
                         {{ post.likes.count }} Like{{ post.likes.count|pluralize }}
 
                         {% if request.user.is_authenticated %}
-                        <form action="{% url 'pixelfy:like_post' %}" method='post'>
-                            {% csrf_token %}
                             {% if post in liked %}
-                                <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-sm btn-danger">Dislike</button>
+                                <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-sm btn-danger unlike-btn">Unlike</button>
                             {% else %}
-                                <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-sm btn-info">Like</button>
+                                <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-sm btn-info like-btn">Like</button>
                             {% endif %}
-                        </form>
                         {% endif %}
                     </div>
                 </div>

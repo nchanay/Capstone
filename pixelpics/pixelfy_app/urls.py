@@ -4,7 +4,7 @@ from . import views
 app_name = 'pixelfy'  # for namespacing
 urlpatterns = [
     path('', views.index, name='index'),
-    path('like_post', views.like_post, name='like_post'),
+    path('like_post/<int:pk>/', views.like_post, name='like_post'),
     path('feed/best', views.index_best, name='best'),
     path('feed/year', views.index_year, name='year'),
     path('feed/month', views.index_month, name='month'),

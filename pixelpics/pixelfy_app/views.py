@@ -76,8 +76,8 @@ def alt_filename(request):
     pass
 
 
-def like_post(request):
-    post = get_object_or_404(Pixelfy, id=request.POST.get('post_id'))
+def like_post(request, pk):
+    post = get_object_or_404(Pixelfy, id=pk)
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
     else:
