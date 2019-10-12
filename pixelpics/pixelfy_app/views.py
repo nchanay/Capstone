@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.files.base import ContentFile
+from django.template.loader import render_to_string
 from base64 import b64decode
 from .models import *
 from datetime import *
@@ -77,9 +78,19 @@ def alt_filename(request):
 
 
 def like_post(request):
-    post = get_object_or_404(Pixelfy, id=request.POST.get('post_id'))
+    post = get_object_or_404(Pixelfy, id=request.POST.get('id'))
+    is_liked = False
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
+        is_liked = False
     else:
         post.likes.add(request.user)
-    return redirect('pixelfy:index')
+        is_liked = True
+    context = {
+        'post': post,
+        'is_liked': is_liked,
+        'total_likes': post.total_likes(),
+    }
+    if request.is_ajax():
+        html = render_to_string('pixelfy:like_section.html', context, request=request)
+        return JsonResponse({'form': html})

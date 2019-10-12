@@ -16,23 +16,14 @@
         </div>
     {% for post in posts %}
         <div class="row mb-3">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8">
+            <!-- <div class="col-sm-2"></div> -->
+            <div class="col-sm-12">
                 <div class="feed-topper break d-flex justify-content-between">
                     <div><a href="{% url 'pixelfy:user' user=post.user %}" class=""><h5 class="card-title">{{post.user}}</h5></a></div>
                     <div class="d-flex align-items-center">
-                        {{ post.likes.count }} Like{{ post.likes.count|pluralize }}
-
-                        {% if request.user.is_authenticated %}
-                        <form action="{% url 'pixelfy:like_post' %}" method='post'>
-                            {% csrf_token %}
-                            {% if post in liked %}
-                                <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-sm btn-danger">Dislike</button>
-                            {% else %}
-                                <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-sm btn-info">Like</button>
-                            {% endif %}
-                        </form>
-                        {% endif %}
+                        <div id="like-section">
+                            {% include 'pixelfy_app/like_section.html' %}
+                        </div>
                     </div>
                 </div>
                 <div class="row">

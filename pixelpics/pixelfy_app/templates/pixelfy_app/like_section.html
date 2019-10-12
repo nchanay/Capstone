@@ -1,0 +1,11 @@
+{{ post.likes.count }} Like{{ post.likes.count|pluralize }}
+{% if request.user.is_authenticated %}
+<form action="{% url 'pixelfy:like_post' %}" method='post'>
+    {% csrf_token %}
+    {% if is_liked %}
+        <button type="submit" id='like' name="post_id" value="{{ post.id }}" class="btn btn-sm btn-danger">Dislike</button>
+    {% else %}
+        <button type="submit" id='like' name="post_id" value="{{ post.id }}" class="btn btn-sm btn-info">Like</button>
+    {% endif %}
+</form>
+{% endif %}
